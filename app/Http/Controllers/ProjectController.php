@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProjectRequest;
+use App\Http\Requests\UpdateProjectRequest;
 use App\Http\Resources\ProjectResource;
 use App\Http\Resources\TaskResource;
 use App\Models\Project;
-use App\Http\Requests\StoreProjectRequest;
-use App\Http\Requests\UpdateProjectRequest;
-use App\Models\Task;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
@@ -23,16 +22,16 @@ class ProjectController extends Controller
         $sort_field = request('sort_field', 'created_at');
         $sort_direction = request('sort_direction', 'desc');
 
-        if(request('name')) {
-            $query->where('name', 'like', '%' . request('name') . '%');
+        if (request('name')) {
+            $query->where('name', 'like', '%'.request('name').'%');
         }
 
-        if(request('status')) {
+        if (request('status')) {
             $query->where('status', request('status'));
         }
 
         $projects = $query->orderBy($sort_field, $sort_direction)->paginate(10)->onEachSide(5);
-        
+
         return inertia('Project/Index', [
             'projects' => ProjectResource::collection($projects),
             'queryParams' => request()->query() ?: null,
@@ -57,8 +56,8 @@ class ProjectController extends Controller
         $data['created_by'] = Auth::id();
         $data['updated_by'] = Auth::id();
         $image = $data['image'] ?? null;
-        
-        $data['image_path'] = $image ? $image->store('project' . Str::random(), 'public') : null;
+
+        $data['image_path'] = $image ? $image->store('project'.Str::random(), 'public') : null;
 
         $project = Project::create($data);
 
@@ -75,11 +74,11 @@ class ProjectController extends Controller
         $sort_field = request('sort_field', 'created_at');
         $sort_direction = request('sort_direction', 'desc');
 
-        if(request('name')) {
-            $query->where('name', 'like', '%' . request('name') . '%');
+        if (request('name')) {
+            $query->where('name', 'like', '%'.request('name').'%');
         }
 
-        if(request('status')) {
+        if (request('status')) {
             $query->where('status', request('status'));
         }
 
@@ -111,11 +110,11 @@ class ProjectController extends Controller
         $image = $data['image'] ?? null;
         $data['updated_by'] = Auth::id();
 
-        if($image) {
-            if($project->image_path) {
+        if ($image) {
+            if ($project->image_path) {
                 \Storage::disk('public')->deleteDirectory(dirname($project->image_path));
             }
-            $data['image_path'] = $image->store('project' . Str::random(), 'public');
+            $data['image_path'] = $image->store('project'.Str::random(), 'public');
         }
 
         $project->update($data);
@@ -131,9 +130,10 @@ class ProjectController extends Controller
     {
         $name = $project->name;
         $project->delete();
-        if($project->image_path) {
+        if ($project->image_path) {
             \Storage::disk('public')->deleteDirectory(dirname($project->image_path));
         }
+
         return to_route('project.index')->with('success', "$name deleted successfully.");
     }
 }

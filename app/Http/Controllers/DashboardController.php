@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\TaskResource;
 use App\Models\Task;
-use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
@@ -35,7 +34,7 @@ class DashboardController extends Controller
         $sort_direction = request('sort_direction', 'desc');
 
         if (request('name')) {
-            $query->where('name', 'like', '%' . request('name') . '%');
+            $query->where('name', 'like', '%'.request('name').'%');
         }
 
         if (request('status')) {

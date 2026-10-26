@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\UserResource;
-use App\Http\Resources\UsersCrudResource;
-use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\UsersCrudResource;
+use App\Models\User;
 
 class UserController extends Controller
 {
@@ -20,16 +19,16 @@ class UserController extends Controller
         $sort_field = request('sort_field', 'created_at');
         $sort_direction = request('sort_direction', 'desc');
 
-        if(request('name')) {
-            $query->where('name', 'like', '%' . request('name') . '%');
+        if (request('name')) {
+            $query->where('name', 'like', '%'.request('name').'%');
         }
 
-        if(request('email')) {
+        if (request('email')) {
             $query->where('email', request('email'));
         }
 
         $users = $query->orderBy($sort_field, $sort_direction)->paginate(10)->onEachSide(5);
-        
+
         return inertia('User/Index', [
             'users' => UsersCrudResource::collection($users),
             'queryParams' => request()->query() ?: null,
@@ -51,7 +50,7 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         $data = $request->validated();
-        
+
         $data['email_verified_at'] = time();
         $data['password'] = bcrypt($data['password']);
 

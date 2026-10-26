@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
+use Database\Factories\TaskFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
-
-    /** @use HasFactory<\Database\Factories\TaskFactory> */
+    /** @use HasFactory<TaskFactory> */
     use HasFactory;
 
     protected $fillable = [
@@ -23,6 +23,7 @@ class Task extends Model
         'created_by',
         'updated_by',
     ];
+
     public function assignedUser()
     {
         return $this->belongsTo(User::class, 'assigned_user_id');

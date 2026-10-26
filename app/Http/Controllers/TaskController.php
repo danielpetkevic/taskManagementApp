@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreTaskRequest;
+use App\Http\Requests\UpdateTaskRequest;
 use App\Http\Resources\ProjectResource;
 use App\Http\Resources\TaskResource;
 use App\Http\Resources\UserResource;
 use App\Models\Project;
 use App\Models\Task;
-use App\Http\Requests\StoreTaskRequest;
-use App\Http\Requests\UpdateTaskRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -26,7 +26,7 @@ class TaskController extends Controller
         $sort_direction = request('sort_direction', 'desc');
 
         if (request('name')) {
-            $query->where('name', 'like', '%' . request('name') . '%');
+            $query->where('name', 'like', '%'.request('name').'%');
         }
 
         if (request('status')) {
@@ -65,7 +65,7 @@ class TaskController extends Controller
         $data['updated_by'] = Auth::id();
         $image = $data['image'] ?? null;
 
-        $data['image_path'] = $image ? $image->store('task' . Str::random(), 'public') : null;
+        $data['image_path'] = $image ? $image->store('task'.Str::random(), 'public') : null;
 
         $task = Task::create($data);
 
@@ -112,7 +112,7 @@ class TaskController extends Controller
             if ($task->image_path) {
                 \Storage::disk('public')->deleteDirectory(dirname($task->image_path));
             }
-            $data['image_path'] = $image->store('task' . Str::random(), 'public');
+            $data['image_path'] = $image->store('task'.Str::random(), 'public');
         }
 
         $task->update($data);
@@ -131,8 +131,10 @@ class TaskController extends Controller
         if ($task->image_path) {
             \Storage::disk('public')->deleteDirectory(dirname($task->image_path));
         }
+
         return to_route('task.index')->with('success', "$name deleted successfully.");
     }
+
     public function myTasks()
     {
         $user = Auth::user();
@@ -142,7 +144,7 @@ class TaskController extends Controller
         $sort_direction = request('sort_direction', 'desc');
 
         if (request('name')) {
-            $query->where('name', 'like', '%' . request('name') . '%');
+            $query->where('name', 'like', '%'.request('name').'%');
         }
 
         if (request('status')) {
