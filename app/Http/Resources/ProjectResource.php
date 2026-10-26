@@ -2,13 +2,14 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Project;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * @mixin \App\Models\Project
+ * @mixin Project
  */
 class ProjectResource extends JsonResource
 {
