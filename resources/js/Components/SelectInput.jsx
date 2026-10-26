@@ -1,9 +1,10 @@
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useRef } from 'react';
 
-export default forwardRef(function SelectInput(
-    { className = '', children, ...props },
-    ref,
-) {
+export default forwardRef(function SelectInput({
+    className = '',
+    children,
+    ...props
+}) {
     const localRef = useRef(null);
 
     return (
