@@ -6,13 +6,15 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UsersCrudResource;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Inertia\Response;
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Response
     {
         $query = User::query();
 
@@ -39,7 +41,7 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): Response
     {
         return inertia('User/Create');
     }
@@ -47,7 +49,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreUserRequest $request)
+    public function store(StoreUserRequest $request): RedirectResponse
     {
         $data = $request->validated();
 
@@ -56,13 +58,13 @@ class UserController extends Controller
 
         $user = User::create($data);
 
-        return to_route('user.show', $user)->with('success', 'User created successfully.');
+        return redirect()->route('user.show', $user)->with('success', 'User created successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(User $user): Response
     {
         return inertia('User/Show', [
             'user' => new UsersCrudResource($user),
@@ -73,7 +75,7 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(User $user)
+    public function edit(User $user): Response
     {
         return inertia('User/Edit', [
             'user' => new UsersCrudResource($user),
@@ -83,7 +85,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
         $data = $request->validated();
 
@@ -98,17 +100,17 @@ class UserController extends Controller
         $user->update($data);
         $name = $user->name;
 
-        return to_route('user.show', $user)->with('success', "$name updated successfully.");
+        return redirect()->route('user.show', $user)->with('success', "$name updated successfully.");
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(User $user): RedirectResponse
     {
         $name = $user->name;
         $user->delete();
 
-        return to_route('user.index')->with('success', "$name deleted successfully.");
+        return redirect()->route('user.index')->with('success', "$name deleted successfully.");
     }
 }

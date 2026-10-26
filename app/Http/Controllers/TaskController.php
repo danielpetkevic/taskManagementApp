@@ -10,15 +10,17 @@ use App\Http\Resources\UserResource;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Inertia\Response;
 
 class TaskController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Response
     {
         $query = Task::query();
 
@@ -44,7 +46,7 @@ class TaskController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): Response
     {
         $projects = Project::orderBy('name')->get();
         $users = User::orderBy('name')->get();
@@ -58,7 +60,7 @@ class TaskController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreTaskRequest $request)
+    public function store(StoreTaskRequest $request): RedirectResponse
     {
         $data = $request->validated();
         $data['created_by'] = Auth::id();
@@ -69,13 +71,13 @@ class TaskController extends Controller
 
         $task = Task::create($data);
 
-        return to_route('task.show', $task)->with('success', 'Task created successfully.');
+        return redirect()->route('task.show', $task)->with('success', 'Task created successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Task $task)
+    public function show(Task $task): Response
     {
         return inertia('Task/Show', [
             'task' => new TaskResource($task),
@@ -87,7 +89,7 @@ class TaskController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Task $task)
+    public function edit(Task $task): Response
     {
         $projects = Project::orderBy('name')->get();
         $users = User::orderBy('name')->get();
@@ -102,7 +104,7 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTaskRequest $request, Task $task)
+    public function update(UpdateTaskRequest $request, Task $task): RedirectResponse
     {
         $data = $request->validated();
         $image = $data['image'] ?? null;
@@ -118,13 +120,13 @@ class TaskController extends Controller
         $task->update($data);
         $name = $task->name;
 
-        return to_route('task.show', $task)->with('success', "$name updated successfully.");
+        return redirect()->route('task.show', $task)->with('success', "$name updated successfully.");
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Task $task)
+    public function destroy(Task $task): RedirectResponse
     {
         $name = $task->name;
         $task->delete();
@@ -132,10 +134,10 @@ class TaskController extends Controller
             \Storage::disk('public')->deleteDirectory(dirname($task->image_path));
         }
 
-        return to_route('task.index')->with('success', "$name deleted successfully.");
+        return redirect()->route('task.index')->with('success', "$name deleted successfully.");
     }
 
-    public function myTasks()
+    public function myTasks(): Response
     {
         $user = Auth::user();
         $query = Task::where('assigned_user_id', $user->id);

@@ -27,7 +27,13 @@ class ProjectFactory extends Factory
             Storage::disk('public')->put($imagePath, $imageResponse->body());
         } else {
             $imagePath = 'project-seeded/'.fake()->uuid().'.svg';
-            Storage::disk('public')->put($imagePath, file_get_contents(public_path('placeholder.svg')));
+            $placeholder = file_get_contents(public_path('placeholder.svg'));
+
+            if ($placeholder === false) {
+                throw new \RuntimeException('Unable to read the placeholder image.');
+            }
+
+            Storage::disk('public')->put($imagePath, $placeholder);
         }
 
         return [

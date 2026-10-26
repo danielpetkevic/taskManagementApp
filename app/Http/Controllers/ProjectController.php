@@ -7,15 +7,17 @@ use App\Http\Requests\UpdateProjectRequest;
 use App\Http\Resources\ProjectResource;
 use App\Http\Resources\TaskResource;
 use App\Models\Project;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Inertia\Response;
 
 class ProjectController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Response
     {
         $query = Project::query();
 
@@ -42,7 +44,7 @@ class ProjectController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): Response
     {
         return inertia('Project/Create');
     }
@@ -50,7 +52,7 @@ class ProjectController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProjectRequest $request)
+    public function store(StoreProjectRequest $request): RedirectResponse
     {
         $data = $request->validated();
         $data['created_by'] = Auth::id();
@@ -61,13 +63,13 @@ class ProjectController extends Controller
 
         $project = Project::create($data);
 
-        return to_route('project.show', $project)->with('success', 'Project created successfully.');
+        return redirect()->route('project.show', $project)->with('success', 'Project created successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Project $project)
+    public function show(Project $project): Response
     {
         $query = $project->tasks();
 
@@ -94,7 +96,7 @@ class ProjectController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Project $project)
+    public function edit(Project $project): Response
     {
         return inertia('Project/Edit', [
             'project' => new ProjectResource($project),
@@ -104,7 +106,7 @@ class ProjectController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProjectRequest $request, Project $project)
+    public function update(UpdateProjectRequest $request, Project $project): RedirectResponse
     {
         $data = $request->validated();
         $image = $data['image'] ?? null;
@@ -120,13 +122,13 @@ class ProjectController extends Controller
         $project->update($data);
         $name = $project->name;
 
-        return to_route('project.show', $project)->with('success', "$name updated successfully.");
+        return redirect()->route('project.show', $project)->with('success', "$name updated successfully.");
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Project $project)
+    public function destroy(Project $project): RedirectResponse
     {
         $name = $project->name;
         $project->delete();
@@ -134,6 +136,6 @@ class ProjectController extends Controller
             \Storage::disk('public')->deleteDirectory(dirname($project->image_path));
         }
 
-        return to_route('project.index')->with('success', "$name deleted successfully.");
+        return redirect()->route('project.index')->with('success', "$name deleted successfully.");
     }
 }

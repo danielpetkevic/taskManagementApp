@@ -7,9 +7,12 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * @mixin \App\Models\Project
+ */
 class ProjectResource extends JsonResource
 {
-    public static $wrap = false;
+    public static $wrap = null;
 
     /**
      * Transform the resource into an array.

@@ -6,9 +6,13 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Carbon;
 
+/**
+ * @mixin \App\Models\User
+ */
+
 class UsersCrudResource extends JsonResource
 {
-    public static $wrap = false;
+    public static $wrap = null;
 
     /**
      * Transform the resource into an array.
