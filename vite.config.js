@@ -11,8 +11,8 @@ export default defineConfig({
         react(),
     ],
     server: {
-    watch: {
-      usePolling: true,
+        watch: {
+            usePolling: true,
+        },
     },
-  },
 });
