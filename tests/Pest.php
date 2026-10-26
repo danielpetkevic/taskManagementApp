@@ -3,6 +3,10 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+beforeEach(function () {
+    $this->withoutVite();
+});
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
